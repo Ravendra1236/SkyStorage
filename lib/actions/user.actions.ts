@@ -5,6 +5,8 @@ import { createAdminClient, createSessionClient } from "@/lib/appwrite";
 import { appwriteConfig } from "@/lib/appwrite/config";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { avatarPlaceholderUrl } from "@/constants";
 
 
 export const getUserByEmail = async (email: string)=>{
@@ -24,16 +26,18 @@ export const handleError = async(error : unknown , message : string)=>{
     
 }
 
-export const sendEmailOTP = async ({email} : {email : string})=>{
-    const {account} = await createAdminClient() ;
 
-    try{
-        const session = await account.createEmailToken(ID.unique() , email ) ;
-        return session.userId ;
-    }catch(error){
-        handleError(error ,"Failed to send email OTP.")
-    }
-}
+export const sendEmailOTP = async ({ email }: { email: string }) => {
+  const { account } = await createAdminClient();
+
+  try {
+    const session = await account.createEmailToken(ID.unique(), email);
+
+    return session.userId;
+  } catch (error) {
+    handleError(error, "Failed to send email OTP");
+  }
+};
 
 export const createAccount = async({
     fullName , 
@@ -53,7 +57,7 @@ export const createAccount = async({
             {
                 fullName ,
                 email,
-                avatar : "https://w7.pngwing.com/pngs/529/832/png-transparent-computer-icons-avatar-user-profile-avatar.png",
+                avatar : avatarPlaceholderUrl,
                 accountId ,
 
             }
@@ -70,6 +74,8 @@ export const verifySecret = async ({
   password: string;
 }) => {
   try {
+    console.log("Verifying OTP with accountId:", accountId, "and password:", password);
+    
     const { account } = await createAdminClient();
 
     const session = await account.createSession(accountId, password);
@@ -83,8 +89,9 @@ export const verifySecret = async ({
 
     return parseStringify({ sessionId: session.$id });
   } catch (error) {
+    console.error("Error during OTP verification:", error); 
     handleError(error, "Failed to verify OTP");
-    return null ;
+    return null;
   }
 };
 
@@ -105,5 +112,30 @@ export const getCurrentUser = async () => {
     return parseStringify(user.documents[0]);
   } catch (error) {
     console.log(error);
+  }
+};
+export const signOutUser = async () => {
+  const { account } = await createSessionClient();
+
+  try {
+    await account.deleteSession("current");
+    (await cookies()).delete("appwrite-session");
+  } catch (error) {
+    handleError(error, "Failed to sign out user");
+  } finally {
+    redirect("/sign-in");
+  }
+};
+export const signInUser = async ({ email }: { email: string }) => {
+  try {
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      await sendEmailOTP({ email });
+      return parseStringify({ accountId: existingUser.accountId });
+    }
+
+    return parseStringify({ accountId: null, error: "User not found" });
+  } catch (error) {
+    handleError(error, "Failed to sign in user");
   }
 };

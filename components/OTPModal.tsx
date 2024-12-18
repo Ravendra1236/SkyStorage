@@ -37,7 +37,7 @@ const OtpModal = ({
     e.preventDefault();
     setIsLoading(true);
 
-    // console.log({ accountId, password }); 
+    console.log({ accountId, password }); 
     // Need to remove afterwards
 
     try {
@@ -45,11 +45,13 @@ const OtpModal = ({
 
       console.log({ sessionId });
 
-      if (sessionId){
+      if (sessionId) {
         console.log("OTP verified successfully, redirecting to home.");
-        
-        router.push("/");
-      } 
+        router.push("/"); // Redirect to home
+      } else {
+        console.log("OTP verification failed.");
+        // Optionally set an error message state to display to the user
+      }
 
     } catch (error) {
       console.log("Failed to verify OTP", error);
