@@ -19,11 +19,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body
         className={`${poppins.variable} font-poppins antialiased`}
+        suppressHydrationWarning
       >
-        {children}
+        <div id="root" suppressHydrationWarning>
+          {children}
+        </div>
       </body>
     </html>
   );

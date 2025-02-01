@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useCallback, useState } from "react";
@@ -72,7 +71,7 @@ const FileUploader = ({ ownerId, accountId, className }: Props) => {
   };
 
   return (
-    <div {...getRootProps()} className="cursor-pointer">
+    <div {...getRootProps()} className="cursor-pointer" suppressHydrationWarning>
       <input {...getInputProps()} />
       <Button type="button" className={cn("uploader-button", className)}>
         <Image
