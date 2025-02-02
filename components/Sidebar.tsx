@@ -63,11 +63,12 @@ const Sidebar = ({ fullName, avatar, email }: Props) => {
       </nav>
 
       <Image
-        src="/assets/images/files-2.png"
+        src="/assets/images/files2.png"
         alt="logo"
         width={506}
         height={418}
-        className="w-[300px] h-[200px]"
+        className="w-[250px] h-[220px]"
+        
       />
 
       <div className="sidebar-user-info" suppressHydrationWarning>

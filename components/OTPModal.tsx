@@ -37,16 +37,16 @@ const OtpModal = ({
     e.preventDefault();
     setIsLoading(true);
 
-    console.log({ accountId, password }); 
+    
     // Need to remove afterwards
 
     try {
       const sessionId = await verifySecret({ accountId, password });
 
-      console.log({ sessionId });
+      // console.log({ sessionId });
 
       if (sessionId) {
-        console.log("OTP verified successfully, redirecting to home.");
+        // console.log("OTP verified successfully, redirecting to home.");
         router.push("/"); // Redirect to home
       } else {
         console.log("OTP verification failed.");

@@ -74,7 +74,7 @@ export const verifySecret = async ({
   password: string;
 }) => {
   try {
-    console.log("Verifying OTP with accountId:", accountId, "and password:", password);
+    
     
     const { account } = await createAdminClient();
 

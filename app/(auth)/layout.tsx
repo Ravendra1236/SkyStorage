@@ -21,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </p>
           </div>
           <Image
-            src="/assets/images/files.png"
+            src="/assets/images/files2.png"
             alt="Files"
             width={300}
             height={300}
