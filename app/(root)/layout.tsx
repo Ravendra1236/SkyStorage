@@ -12,14 +12,18 @@ const Layout =async ({children} : {children: React.ReactNode}) =>{
       if (!currentUser) return redirect("/sign-in");
     return (
       <main className="flex h-screen" suppressHydrationWarning>
-        
         <Sidebar {...currentUser} />
-        <section className="flex h-full flex-1 flex-col" suppressHydrationWarning>
-          <MobileNavigation {...currentUser}/>
-          <Header userId={currentUser.$id} accountId={currentUser.accountId}/>
-          <div className="main-content" suppressHydrationWarning>{children}</div>
+        <section
+          className="flex h-full flex-1 flex-col bg-[#E5FFED]"
+          suppressHydrationWarning
+        >
+          <MobileNavigation {...currentUser} />
+          <Header userId={currentUser.$id} accountId={currentUser.accountId} />
+          <div className="main-content" suppressHydrationWarning>
+            {children}
+          </div>
         </section>
-        <Toaster/>
+        <Toaster />
       </main>
     );
 }

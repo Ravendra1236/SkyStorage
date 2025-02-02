@@ -123,7 +123,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
           <Button
             type="submit"
-            className="form-submit-button"
+            className="form-submit-button bg-green !impor"
             disabled={isLoading}
           >
             {type === "sign-in" ? "Sign In" : "Sign Up"}
@@ -149,7 +149,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
             </p>
             <Link
               href={type === "sign-in" ? "/sign-up" : "/sign-in"}
-              className="ml-1 font-medium text-brand"
+              className="ml-1 font-medium text-green"
             >
               {" "}
               {type === "sign-in" ? "Sign Up" : "Sign In"}
