@@ -1,261 +1,242 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkyStorage Documentation</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+# 🌟 SkyStorage - Modern Cloud Storage Solution
+
+## 📋 Overview
+SkyStorage is a cutting-edge cloud storage platform built with Next.js and Appwrite, designed to revolutionize how you manage and share digital content. Whether you're organizing documents, sharing media, or collaborating with team members, SkyStorage provides a seamless, secure, and intuitive experience. 
+
+## 🎯 Purpose
+Our mission is to simplify file management while maintaining enterprise-grade security and real-time collaboration capabilities. SkyStorage stands out with its modern UI/UX design, lightning-fast performance, and comprehensive feature set.
+
+## ✨ Key Highlights
+
+### 🔐 Security First
+    - End-to-end file encryption
+    - Secure authentication with email OTP
+    - Granular access controls
+    - Protected file sharing
+
+### 🚀 Performance
+    - Real-time updates and synchronization
+    - Optimized file uploads and downloads
+    - Efficient search and filtering
+    - Responsive across all devices
+
+### 💼 Professional Features
+    - 📊 Storage analytics and usage tracking
+    - 📁 Intelligent file organization
+    - 🔄 Version control and history
+    - 🤝 Team collaboration tools
+    - 📱 Cross-platform compatibility
+
+### 🎨 User Experience
+    - Clean, intuitive interface
+    - Drag-and-drop functionality
+    - Quick preview capabilities
+    - Customizable workspace
+
+### 🛠 Technical Excellence
+    - Built with Next.js 15.1.0
+    - Powered by Appwrite backend
+    - Styled with Tailwind CSS
+    - Component library by shadcn/ui
+    - Real-time charts with Recharts
+
+## 💡 Perfect For
+    - 👨‍💼 Professionals managing documents
+    - 🎨 Creatives storing media files
+    - 👥 Teams collaborating on projects
+    - 🏢 Businesses requiring secure storage
+    - 🌐 Anyone needing organized cloud storage
+
+## 🌈 Why SkyStorage?
+    - 🎯 User-centric design
+    - ⚡ Lightning-fast performance
+    - 🛡️ Enterprise-grade security
+    - 🤝 Seamless collaboration
+    - 📱 Cross-platform accessibility
+    - 🔄 Real-time synchronization
+    - 📊 Comprehensive analytics
+
+Experience the future of cloud storage with SkyStorage - where security meets simplicity! 🚀
+
+## Project Structure
+    
+    sky-storage/
+    ├── app/
+    │ ├── (auth)/
+    │ │ └── layout.tsx
+    │ ├── (root)/
+    │ │ ├── [type]/
+    │ │ │ └── page.tsx
+    │ │ └── page.tsx
+    │ ├── globals.css
+    │ └── layout.tsx
+    ├── components/
+    │ ├── ui/
+    │ │ └── [shadcn components]
+    │ ├── ActionsDropdown.tsx
+    │ ├── ActionsModalContent.tsx
+    │ ├── Card.tsx
+    │ ├── Chart.tsx
+    │ ├── FormattedDateTime.tsx
+    │ └── [other components]
+    ├── lib/
+    │ ├── actions/
+    │ │ ├── file.actions.ts
+    │ │ └── user.actions.ts
+    │ ├── appwrite/
+    │ │ ├── config.ts
+    │ │ └── index.ts
+    │ └── utils.ts
+    ├── public/
+    │ └── assets/
+    ├── types/
+    └── [config files]
+
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm/yarn/pnpm
+- Appwrite instance (local or cloud)
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+    env
+    NEXT_PUBLIC_APPWRITE_ENDPOINT=
+    NEXT_PUBLIC_APPWRITE_PROJECT=
+    NEXT_PUBLIC_APPWRITE_DATABASE=
+    NEXT_PUBLIC_APPWRITE_USERS_COLLECTION=
+    NEXT_PUBLIC_APPWRITE_FILES_COLLECTION=
+    NEXT_PUBLIC_APPWRITE_BUCKET=
+    NEXT_APPWRITE_SECRET=
+
+### Installation
+
+1. Clone the repository:
+
+        bash
+        git clone https://github.com/yourusername/sky-storage.git
+        cd sky-storage
+   
+2. Install dependencies:
+
+        bash
+        npm install
+        or
+        yarn install
+        or
+        pnpm install
+
+3. Run the development server:
+
+        bash
+        npm run dev
+        or
+        yarn dev
+        or
+        pnpm dev
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Appwrite Setup
+
+    1. Create an Appwrite project
+    2. Create the following collections:
+       - Users Collection
+       - Files Collection
+    3. Create a storage bucket
+    4. Set up the appropriate security rules and permissions
+    5. Update environment variables with your Appwrite credentials
+
+## Key Components
+
+### File Management
+The file management system is implemented in:
+
+        typescript:lib/actions/file.actions.ts
+        export const getFiles = async ({
+        types = [],
+        searchText = "",
+        sort = "$createdAt-desc",
+        limit,
+        }: GetFilesProps) => {
+        const { databases } = await createAdminClient();
+        try {
+        const currentUser = await getCurrentUser();
+        if (!currentUser) throw new Error("User not found");
+        const queries = createQueries(currentUser, types, searchText, sort, limit);
+        const files = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.filesCollectionId,
+        queries
+        );
+        return parseStringify(files);
+        } catch (error) {
+        handleError(error, "Failed to get files");
         }
+        };
 
-        h1, h2, h3 {
-            color: #2d3748;
+### Dashboard Analytics
+The dashboard analytics are handled in:
+
+        typescript:lib/utils.ts
+        export const getUsageSummary = (totalSpace: any) => {
+        return [
+        {
+        title: "Documents",
+        size: totalSpace.document.size,
+        latestDate: totalSpace.document.latestDate,
+        icon: "/assets/icons/file-document-light.svg",
+        url: "/documents",
+        },
+        // ... other file types
+        ];
+        };
+
+### Authentication
+User authentication is managed through:
+
+        typescript:lib/actions/user.actions.ts
+        export const sendEmailOTP = async ({ email }: { email: string }) => {
+        const { account } = await createAdminClient();
+        try {
+        const session = await account.createEmailToken(ID.unique(), email);
+        return session.userId;
+        } catch (error) {
+        handleError(error, "Failed to send email OTP");
         }
+        };
+        export const createAccount = async({
+        fullName,
+        email
+        }: {
+        fullName: string;
+        email: string;
+        }) => {
+        // ... account creation logic
+        };  
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+## Contributing
 
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-        .feature-card {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+## License
 
-        .tech-stack {
-            background: #edf2f7;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 30px 0;
-        }
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-        .code-block {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 20px 0;
-        }
+## Acknowledgments
 
-        .installation-steps {
-            background: #fff;
-            padding: 20px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
+- [Next.js](https://nextjs.org/)
+- [Appwrite](https://appwrite.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
 
-        .env-variables {
-            background: #f8f9fa;
-            padding: 15px;
-            border-left: 4px solid #3DD9B3;
-            margin: 20px 0;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #3DD9B3;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .button:hover {
-            background: #2fb89a;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>🚀 SkyStorage - Cloud Storage Solution</h1>
-        <p>A modern cloud storage solution built with Next.js</p>
-    </div>
-
-    <section>
-        <h2>✨ Features</h2>
-        <div class="features">
-            <div class="feature-card">
-                <h3>📁 File Management</h3>
-                <p>Upload, download, rename, and delete files with ease</p>
-            </div>
-            <div class="feature-card">
-                <h3>🔄 Real-time Updates</h3>
-                <p>See changes instantly across all devices</p>
-            </div>
-            <div class="feature-card">
-                <h3>🔍 Search & Filter</h3>
-                <p>Find your files quickly and efficiently</p>
-            </div>
-            <div class="feature-card">
-                <h3>📊 Analytics</h3>
-                <p>Track storage usage and file statistics</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="tech-stack">
-        <h2>🛠️ Tech Stack</h2>
-        <ul>
-            <li><strong>Framework:</strong> Next.js 15.1.0</li>
-            <li><strong>Authentication:</strong> Appwrite</li>
-            <li><strong>Styling:</strong> Tailwind CSS</li>
-            <li><strong>UI Components:</strong> shadcn/ui</li>
-            <li><strong>File Storage:</strong> Appwrite Storage</li>
-            <li><strong>Charts:</strong> Recharts</li>
-            <li><strong>Form Handling:</strong> React Hook Form</li>
-            <li><strong>Validation:</strong> Zod</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>📁 Project Structure</h2>
-        <div class="code-block">
-            <pre>
-sky-storage/
-├── app/
-│   ├── (auth)/
-│   │   └── layout.tsx
-│   ├── (root)/
-│   │   ├── [type]/
-│   │   │   └── page.tsx
-│   │   └── page.tsx
-│   ├── globals.css
-│   └── layout.tsx
-├── components/
-│   ├── ui/
-│   ├── ActionsDropdown.tsx
-│   ├── ActionsModalContent.tsx
-│   └── [other components]
-├── lib/
-│   ├── actions/
-│   ├── appwrite/
-│   └── utils.ts
-├── public/
-│   └── assets/
-└── types/
-            </pre>
-        </div>
-    </section>
-
-    <section class="installation-steps">
-        <h2>🚀 Getting Started</h2>
-        
-        <h3>Prerequisites</h3>
-        <ul>
-            <li>Node.js 18+</li>
-            <li>npm/yarn/pnpm</li>
-            <li>Appwrite instance</li>
-        </ul>
-
-        <h3>Environment Variables</h3>
-        <div class="env-variables">
-            <pre>
-NEXT_PUBLIC_APPWRITE_ENDPOINT=
-NEXT_PUBLIC_APPWRITE_PROJECT=
-NEXT_PUBLIC_APPWRITE_DATABASE=
-NEXT_PUBLIC_APPWRITE_USERS_COLLECTION=
-NEXT_PUBLIC_APPWRITE_FILES_COLLECTION=
-NEXT_PUBLIC_APPWRITE_BUCKET=
-NEXT_APPWRITE_SECRET=
-            </pre>
-        </div>
-
-        <h3>Installation Steps</h3>
-        <ol>
-            <li>
-                <p>Clone the repository:</p>
-                <div class="code-block">
-                    <code>git clone https://github.com/yourusername/sky-storage.git</code>
-                    <br>
-                    <code>cd sky-storage</code>
-                </div>
-            </li>
-            <li>
-                <p>Install dependencies:</p>
-                <div class="code-block">
-                    <code>npm install</code>
-                    <br>
-                    <code># or yarn install</code>
-                    <br>
-                    <code># or pnpm install</code>
-                </div>
-            </li>
-            <li>
-                <p>Run the development server:</p>
-                <div class="code-block">
-                    <code>npm run dev</code>
-                    <br>
-                    <code># or yarn dev</code>
-                    <br>
-                    <code># or pnpm dev</code>
-                </div>
-            </li>
-        </ol>
-    </section>
-
-    <section>
-        <h2>⚙️ Appwrite Setup</h2>
-        <ol>
-            <li>Create an Appwrite project</li>
-            <li>Create required collections:
-                <ul>
-                    <li>Users Collection</li>
-                    <li>Files Collection</li>
-                </ul>
-            </li>
-            <li>Create a storage bucket</li>
-            <li>Configure security rules and permissions</li>
-            <li>Update environment variables</li>
-        </ol>
-    </section>
-
-    <section>
-        <h2>🤝 Contributing</h2>
-        <ol>
-            <li>Fork the repository</li>
-            <li>Create your feature branch (<code>git checkout -b feature/AmazingFeature</code>)</li>
-            <li>Commit your changes (<code>git commit -m 'Add some AmazingFeature'</code>)</li>
-            <li>Push to the branch (<code>git push origin feature/AmazingFeature</code>)</li>
-            <li>Open a Pull Request</li>
-        </ol>
-    </section>
-
-    <section>
-        <h2>📝 License</h2>
-        <p>This project is licensed under the MIT License - see the LICENSE file for details.</p>
-    </section>
-
-    <section>
-        <h2>🙏 Acknowledgments</h2>
-        <ul>
-            <li><a href="https://nextjs.org/" target="_blank">Next.js</a></li>
-            <li><a href="https://appwrite.io/" target="_blank">Appwrite</a></li>
-            <li><a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a></li>
-            <li><a href="https://ui.shadcn.com/" target="_blank">shadcn/ui</a></li>
-        </ul>
-    </section>
-
-    <footer style="text-align: center; margin-top: 50px; padding: 20px; border-top: 1px solid #e2e8f0;">
-        <p>For more detailed information about specific features or components, please refer to the inline documentation in the source code.</p>
-        <a href="https://github.com/yourusername/sky-storage" class="button">View on GitHub</a>
-    </footer>
-</body>
-</html>
+For more detailed information about specific features or components, please refer to the inline documentation in the source code.
